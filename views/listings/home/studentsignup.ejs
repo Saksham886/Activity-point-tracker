@@ -1,0 +1,142 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Student Signup 
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/en/thumb/8/87/BMS_College_of_Engineering.svg/330px-BMS_College_of_Engineering.svg.png">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+  <style>
+   body {
+            font-family: 'Roboto', sans-serif;
+        }
+  </style>
+ </head>
+ <body class="bg-gradient-to-b from-[#42a5f5] to-white min-h-screen flex flex-col justify-between">
+    <header class="bg-[#42a5f5] text-white p-4 flex justify-between items-center">
+        <a class="navbar-brand" href="/"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/8/87/BMS_College_of_Engineering.svg/330px-BMS_College_of_Engineering.svg.png" style="height: 4rem; width: 4rem;"></a>
+        <nav>
+         <ul class="flex space-x-4">
+          <li>
+           <a class="hover:underline" href="/">
+            Home
+           </a>
+          </li>
+          <li>
+           <a class="hover:underline" href="#">
+            About
+           </a>
+          </li>
+          <li>
+           <a class="hover:underline" href="#">
+            Contact
+           </a>
+          </li>
+          <li>
+           <a class="hover:underline" href="#">
+            Help
+           </a>
+          </li>
+         </ul>
+        </nav>
+       </header>
+  <main class="flex-grow flex items-center justify-center mt-8">
+   <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+    <div class="text-center mb-6">
+        <i class="fas fa-user-graduate text-4xl text-blue-500 mb-2">
+        </i>
+        <h1 class="text-2xl font-bold text-gray-800">
+            Student Signup
+        </h1>
+       </div>
+    <form method="POST" action="/signup" class="space-y-4">
+     <div>
+      <label class="block text-gray-700" for="username">
+       Full Name
+      </label>
+      <input class="w-full p-2 border border-gray-300 rounded" id="username" name="username" required="" type="text"/>
+     </div>
+     <div>
+      <label class="block text-gray-700" for="usn">
+       USN
+      </label>
+      <input class="w-full p-2 border border-gray-300 rounded" id="usn" name="usn" placeholder="Enter your USN" required="" type="text"/>
+     </div>
+     <div>
+      <label class="block text-gray-700" for="email">
+       Email Address
+      </label>
+      <input class="w-full p-2 border border-gray-300 rounded" id="email" name="email" placeholder="Enter your institutional email" required="" type="email"/>
+     </div>
+     <div>
+      <label class="block text-gray-700" for="proctor_name">
+       Proctor Name
+      </label>
+      <input class="w-full p-2 border border-gray-300 rounded" id="proctor_name" name="proctor_name" required="" type="text"/>
+     </div>
+     <div>
+      <label class="block text-gray-700" for="proctor_email">
+       Proctor Email
+      </label>
+      <input class="w-full p-2 border border-gray-300 rounded" id="proctor_email" name="proctor_email" placeholder="Enter your proctor’s institutional email" required="" type="email"/>
+     </div>
+     <div>
+      <label class="block text-gray-700" for="password">
+       Create Password
+      </label>
+      <input class="w-full p-2 border border-gray-300 rounded" id="password" name="password" required="" type="password"/>
+     </div>
+     <button class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-700 transition duration-200" type="submit">
+      Sign Up
+     </button>
+    </form>
+    <p class="mt-4 text-center text-sm text-gray-600">
+        Already have an account?
+        <a class="text-[#e53935] hover:underline" href="/student_login">
+            Login here
+        </a>
+        </p>
+   </div>
+  </main>
+  <br><br>
+  <!-- Footer Section -->
+  <footer class="bg-black text-white py-8 mt-4">
+    <div class="container mx-auto text-center">
+     <ul class="flex justify-center space-x-4 mb-4">
+      <li>
+       <a class="hover:underline" href="#">
+        Privacy Policy
+       </a>
+      </li>
+      <li>
+       <a class="hover:underline" href="#">
+        Terms of Service
+       </a>
+      </li>
+      <li>
+       <a class="hover:underline" href="#">
+        FAQs
+       </a>
+      </li>
+     </ul>
+     <div class="flex justify-center space-x-4 mb-4">
+      <a class="hover:text-gray-400" href="#">
+       <i class="fab fa-linkedin">
+       </i>
+      </a>
+      <a class="hover:text-gray-400" href="#">
+       <i class="fab fa-instagram">
+       </i>
+      </a>
+     </div>
+     <p>
+      © 2024 Activity Point Tracker. All rights reserved.
+     </p>
+    </div>
+   </footer>
+ </body>
+</html>

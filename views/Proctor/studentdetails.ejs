@@ -1,0 +1,66 @@
+<% layout("/layouts/proctor_boilerplate") %>
+<body>
+<br>
+<% const student = users.find(user => user._id.toString() === id); %>
+<div class="student-details">
+  <h5>Student Name: <%= student.username %></h5>
+  <h5>USN: <%= student.usn %></h5>
+</div>
+
+<!-- Separator with message -->
+<div class="activity-separator">
+  <hr>
+  <h6>Showing All Activities</h6>
+  <hr>
+</div>
+  <table class="table table-striped table-hover mt-4">
+    <thead>
+      <tr>
+        <th scope="col" style="width: 5%;">#</th>
+        <th scope="col" style="width: 25%;">Activity</th>
+        <th scope="col" style="width: 40%;">Description</th>
+        <th scope="col" style="width: 10%;">Points</th>
+        <th scope="col" style="width: 20%;">Certificate</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%i=1%>
+      <% for (let list of alllistings) { %>
+        <% if (list.owner._id.toString() === id) { %>
+            <% if (list.verify === 1) { %>
+
+            <tr>
+                <td><%= i++ %></td>
+                <td><%= list.activity %></td>
+                <td><%= list.description %></td>
+                <td><%=  list.points %></td>
+                <td>
+                    <% if (list.certificate && list.certificate.url) { %>
+                      <a href="<%= list.certificate.url %>" target="_blank">View Certificate</a>
+                    <% } else { %>
+                      N/A
+                    <% } %>
+                  </td>
+              </tr>
+      <% } %>
+      <% } %>
+      <% } %>
+    </tbody>
+  </table>
+  <style>
+    .student-details {
+      margin: 20px 0; /* Add spacing above and below */
+      padding: 15px; /* Add inner padding */
+      background-color: #f9f9f9; /* Light background color */
+      border: 1px solid #ddd; /* Subtle border */
+      border-radius: 8px; /* Rounded corners */
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow for a lifted effect */
+    }
+  
+    .student-details h4 {
+      margin: 5px 0; /* Reduce vertical spacing between headers */
+      color: #333; /* Darker text color for readability */
+      font-weight: bold; /* Make text bold */
+    }
+  </style>
+</body>

@@ -1,0 +1,76 @@
+body{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+.container{
+    flex: 1;
+}
+
+/* navbar */
+.navbar{
+    height: 5rem;
+    background-color: #42a5f5 !important;
+}
+.nav-link{
+    color: white !important;
+}
+
+/* footer */
+.f-info-links a{
+    color: white;
+    text-decoration: none;
+    margin-right: 1rem;
+}
+.f-brand{
+    color: white;
+}
+.f-info-links a:hover{
+    text-decoration: underline;
+}
+.f-info-links,.f-social,.f-brand{
+    width: 100%;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    color: white;
+
+}
+.f-social i {
+    font-size: 1.2rem;
+    margin-right: 1rem;
+    opacity: 0.8;
+    color: white;
+}
+.f-info{
+    text-align: center;
+    height: 5rem;
+    background-color: #000000;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: space-evenly;
+}
+
+
+/* card */
+.card{
+    margin-right: 1rem;
+    margin-top: 2rem;
+}
+.card-title{
+    margin-top: 2.5rem;
+    margin-left: 2rem;
+    align-items: center;
+}
+.card-link{
+    text-decoration: none;
+}
+.card-body{
+    opacity: 0.9;
+}
+.card-body:hover{
+    font-size: 1rem;
+    opacity: 5;
+}
