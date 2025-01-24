@@ -30,13 +30,6 @@ const User_proctor = require('./models/user_proctor.js');
 const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 
-
-// const passport=require("passport");
-// const localStrategy = require("passport-local");
-
-// const User = require("./models/user.js");
-// const User_proctor = require("./models/user_proctor.js");
-
 const wrapAsync = require("./public/util/WrapAsync.js");
 // Connection to DB
 const MONGO_URL=process.env.MONGOURL;
@@ -89,12 +82,6 @@ passport.deserializeUser(async (data, done) => {
     done(err);
   }
 });
-
-// passport.use(new localStrategy(User.authenticate()));
-// passport.serializeUser(User.serializeUser());
-// passport.deserializeUser(User.deserializeUser());
-
-
 // email_sent
 const nodemailer = require('nodemailer');
 
