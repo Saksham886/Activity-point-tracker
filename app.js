@@ -21,6 +21,7 @@ app.engine("ejs",ejsmate);
 // to use static file it should be save in public folder only
 app.use(express.static(path.join(__dirname,"public")));
 // express session 
+const MongoStore = require('connect-mongo');
 const session=require("express-session");
 const upload = require('./config/multer');
 
@@ -32,7 +33,7 @@ const localStrategy = require('passport-local').Strategy;
 
 const wrapAsync = require("./public/util/WrapAsync.js");
 // Connection to DB
-const MONGO_URL=process.env.MONGOURL;
+const MONGO_URL=process.env.MONGO;
 // Error Handling
 main().then(()=>{
     console.log("Connected to DB");
@@ -43,7 +44,19 @@ async function main() {
     await mongoose.connect(MONGO_URL);
 }
 // Session for cookies
+const store= MongoStore.create({
+  mongoUrl: MONGO_URL,
+  crypto: {
+      secret: process.env.SECRET,
+    },
+    touchAfter: 1*3600,
+  
+})
+store.on("error",()=>{
+  console.log("Error in Mongosession store",error);
+});
 const sessionOptions={
+    store,
     secret:process.env.SECRET,
     resave:false,
     saveUninitialized: true,
