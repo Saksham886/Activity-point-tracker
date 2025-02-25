@@ -226,7 +226,7 @@ app.get('/proctor',async(req,res)=>{
     const useremail = req.user.email;
     const alllistings = await Listing.find({ }).populate("owner");
     
-    res.render("../views/proctor/home.ejs",{alllistings,useremail,username});
+    res.render("/proctor/home.ejs",{alllistings,useremail,username});
 })
 app.post('/verify-listing', async (req, res) => {
     const { id, status } = req.body;
