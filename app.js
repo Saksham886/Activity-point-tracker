@@ -34,7 +34,7 @@ const localStrategy = require('passport-local').Strategy;
 
 const wrapAsync = require("./public/util/WrapAsync.js");
 // Connection to DB
-const MONGO_URL=process.env.MONGOURL;
+const MONGO_URL=process.env.MONGO;
 // Error Handling
 main().then(()=>{
     console.log("Connected to DB");
