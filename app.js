@@ -1,6 +1,7 @@
 const express=require('express');
 const app=express();
 const mongoose=require('mongoose');
+const flash=require('connect-flash');
 require('dotenv').config(); // Load environment variables from .env file
 // require schema
 const Listing=require('./models/listings');
@@ -33,7 +34,7 @@ const localStrategy = require('passport-local').Strategy;
 
 const wrapAsync = require("./public/util/WrapAsync.js");
 // Connection to DB
-const MONGO_URL=process.env.MONGO;
+const MONGO_URL=process.env.MONGOURL;
 // Error Handling
 main().then(()=>{
     console.log("Connected to DB");
@@ -68,8 +69,13 @@ const sessionOptions={
     },
 };
 app.use(session(sessionOptions));
+app.use(flash());
 app.use(express.json()); 
-
+app.use((req,res,next)=>{
+  res.locals.success=req.flash("success");
+  res.locals.error=req.flash("error");
+  next();
+})
 // passport setup
 app.use(passport.initialize());
 app.use(passport.session());
@@ -138,12 +144,14 @@ app.post("/signup",wrapAsync(async(req,res)=>{
     const newuser=new User({username,usn,email,proctor_name,proctor_email,pointearned:0,password});
     const registereduser=await User.register(newuser,password);
     console.log(registereduser);
+    req.flash("success","Your account has been created successfully!");
     res.redirect("/dashboard");
 }));
 
 // login student
 app.post("/login",passport.authenticate('user-local',
-    { failureRedirect: '/student_login' }),async(req,res)=>{
+    { failureRedirect: '/student_login',failureFlash:true }),async(req,res)=>{
+        req.flash("success","Login successful!");
         res.redirect("/dashboard");
 })
 // home
@@ -172,15 +180,10 @@ app.get('/student_signup',(req,res)=>{
 app.get('/logout',(req, res, next)=>{
     req.logout((err)=> {
       if (err) { return next(err); }
+      req.flash("success","You have safely logged out.");
       res.redirect('/');
     });
   });
-
-
-
-
-
-
 
 //proctor
 
@@ -190,25 +193,29 @@ app.post("/proctor_signup",wrapAsync(async(req,res)=>{
     const newuser=new User_proctor({username,email,password});
     const proctor_user=await User_proctor.register(newuser,password);
     console.log(proctor_user);
+    req.flash("success","Your account has been created successfully!");
     res.redirect("/proctor_login");
 }));
 
 // login proctor
 app.post("/proctor_login",passport.authenticate('proctor-local',
-    { failureRedirect: '/proctor_login' }),async(req,res)=>{
-        res.redirect("/proctor");
+    { failureRedirect: '/proctor_login' , failureFlash:true}),async(req,res)=>{
+      req.flash("success","Login successful!"); 
+      res.redirect("/proctor");
+
 })
 // proctor logout
 app.get('/proctor_logout',(req, res, next)=>{
     req.logout((err)=> {
       if (err) { return next(err); }
+      req.flash("success","You have safely logged out.");
       res.redirect('/');
     });
   });
 
 app.get('/proctees',async(req,res)=>{
   if (!req.isAuthenticated()) {
-    console.log("Log in first");
+    req.flash("error","Please Login");
     return res.redirect("/proctor_login");;
 }
   const useremail = req.user.email;
@@ -218,7 +225,7 @@ app.get('/proctees',async(req,res)=>{
 })
 app.get('/proctor',async(req,res)=>{
   if (!req.isAuthenticated()) {
-    console.log("Log in first");
+    req.flash("error","Please Login");
     return res.redirect("/proctor_login");
 }
 
@@ -250,11 +257,9 @@ app.post('/verify-listing', async (req, res) => {
 // index route
 app.get('/dashboard', async (req, res) => {
   if (!req.isAuthenticated()) {
-      console.log("Log in first");
+      req.flash("success","Please Login");
       return res.render("../views/listings/home/studentlogin.ejs");
-  }
-
-  
+  }  
       const username = req.user.username;
       const curruser = req.user._id;
 
@@ -294,49 +299,68 @@ app.get('/dashboard/:id',async(req,res)=>{
 })
 
 // post
-app.post('/dashboard', upload.single('certificate'), async (req, res) => {
-    const { activity, date, description, points } = req.body.listing;
-    const proctor_mail = req.user.proctor_email;
+app.post('/dashboard', upload, async (req, res) => {
+  try {
+      const { activity, date, description, points } = req.body.listing;
+      const proctor_mail = req.user.proctor_email;
 
-    // Create a new activity listing
-    const newActivity = new Listing({
-      activity,
-      date,
-      description,
-      points,
-      verify: -1, // Initial verification status
-      owner: req.user._id,
-      certificate: {
-        url: `/uploads/${req.file.filename}`,  // Store the file path in the database
-        filename: req.file.filename  // Store the file name
-      }
-    });
+      // Create a new activity listing
+      const newActivity = new Listing({
+          activity,
+          date,
+          description,
+          points,
+          verify: -1, // Initial verification status
+          owner: req.user._id,
+          certificate: {
+              url: `/uploads/${req.file.filename}`,  // Store the file path in the database
+              filename: req.file.filename  // Store the file name
+          }
+      });
 
-    // Send notification to the proctor
-    const message = `Student's Name: ${req.user.username}
+      // Send notification to the proctor
+      const message = `Student's Name: ${req.user.username}
 Activity: ${newActivity.activity}
 Points Claimed: ${newActivity.points}
-Date: ${new Date(newActivity.date).toLocaleDateString() }
+Date: ${new Date(newActivity.date).toLocaleDateString()}
 Details:
 ${newActivity.description}`;
 
-    sendNotification(proctor_mail, message);
+      sendNotification(proctor_mail, message);
 
-    // Save the new activity
-    await newActivity.save();
+      // Save the new activity
+      await newActivity.save();
 
-    res.redirect('/dashboard');
+      // Flash success message
+      req.flash('success', 'Activity successfully added!');
+      res.redirect('/dashboard');
+
+  } catch (error) {
+      console.error(error);
+      req.flash('error', 'Failed to add activity. Please try again.');
+      res.redirect('/dashboard/new');
   }
-);
+});
+
 
 
 // delete route
-app.delete('/dashboard/:id',async (req,res)=>{
-    let {id}=req.params;
-    let deleted=await Listing.findByIdAndDelete(id);
-    console.log("Deleted");
-    res.redirect('/dashboard');
-})
+app.delete('/dashboard/:id', async (req, res) => {
+  try {
+      let { id } = req.params;
+      let deleted = await Listing.findByIdAndDelete(id);
+      if (!deleted) {
+          req.flash('error', 'Activity not found.');
+      } else {
+          req.flash('success', 'Activity successfully deleted.');
+      }
+      res.redirect('/dashboard');
+  } catch (error) {
+      console.error(error);
+      req.flash('error', 'Failed to delete activity. Please try again.');
+      res.redirect(`/dashboard/${id}`);
+  }
+});
 app.listen(8080,()=>{
     console.log("app is listening");
 });

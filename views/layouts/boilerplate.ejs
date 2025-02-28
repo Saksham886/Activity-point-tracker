@@ -13,10 +13,22 @@
 <body>
      <%- include("../includes/navbar.ejs")%>
     <div class="container">
+        <%- include("../includes/flash.ejs")%>
         <%- body %>
     </div>
     <%- include("../includes/footer.ejs")%>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="/js/script.js"></script>
+    <script src="/js/script.js">
+  setTimeout(function () {
+    let alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+      alert.style.transition = "opacity 0.5s ease-out";
+      alert.style.opacity = "0";
+      setTimeout(() => alert.remove(), 500); // Remove after fading
+    });
+  }, 2000); // 2 seconds
+
+
+    </script>
 </body>
 </html>

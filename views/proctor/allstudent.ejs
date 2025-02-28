@@ -46,6 +46,16 @@
         });
       });
     });
+  setTimeout(function () {
+    let alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+      alert.style.transition = "opacity 0.5s ease-out";
+      alert.style.opacity = "0";
+      setTimeout(() => alert.remove(), 500); // Remove after fading
+    });
+  }, 1500); // 2 seconds
+
+
   </script>
   
 </body>

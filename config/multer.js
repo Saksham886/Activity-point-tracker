@@ -1,17 +1,17 @@
 const multer = require('multer');
 const path = require('path');
 
-// Set storage engine for multer
+// Set storage engine
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, './public/uploads/');  // Specify where the file should be uploaded
+    cb(null, './public/uploads/'); // Uploads will be stored here
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));  // Ensure the file name is unique
+    cb(null, Date.now() + path.extname(file.originalname)); // Ensure unique filenames
   }
 });
 
-// Filter to allow only PDF files
+// File filter to allow only PDFs
 const fileFilter = (req, file, cb) => {
   if (file.mimetype === 'application/pdf') {
     cb(null, true);
@@ -20,11 +20,22 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Multer configuration
+// Initialize multer
 const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
-  limits: { fileSize: 2 * 1024 * 1024 }  // Limit the file size to 10 MB
+  limits: { fileSize: 2 * 1024 * 1024 } // 2 MB limit
 });
 
-module.exports = upload;
+// Middleware to handle file uploads and errors
+const uploadMiddleware = (req, res, next) => {
+  upload.single('certificate')(req, res, (err) => {
+    if (err) {
+      req.flash('error', err.message || 'File upload error!');
+      return res.redirect('/dashboard/new'); // Redirect on error
+    }
+    next(); // Proceed if no error
+  });
+};
+
+module.exports = uploadMiddleware;
