@@ -155,7 +155,7 @@ app.post("/signup", wrapAsync(async (req, res, next) => {
       } else {
           req.flash("error", "Something went wrong. Please try again.");
       }
-      res.redirect("/signup");
+      res.redirect("/student_signup");
   }
 }));
 
