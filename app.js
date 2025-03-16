@@ -139,14 +139,26 @@ const sendNotification = (toEmail, message) => {
 
 
 // signup_student
-app.post("/signup",wrapAsync(async(req,res)=>{
-    let { username,usn,email,proctor_name,proctor_email,password}=req.body;
-    const newuser=new User({username,usn,email,proctor_name,proctor_email,pointearned:0,password});
-    const registereduser=await User.register(newuser,password);
-    console.log(registereduser);
-    req.flash("success","Your account has been created successfully!");
-    res.redirect("/dashboard");
+app.post("/signup", wrapAsync(async (req, res, next) => {
+  try {
+      let { username, usn, email, proctor_name, proctor_email, password } = req.body;
+      const newUser = new User({ username, usn, email, proctor_name, proctor_email, pointearned: 0 });
+
+      const registeredUser = await User.register(newUser, password);
+      console.log(registeredUser);
+
+      req.flash("success", "Your account has been created successfully!");
+      res.redirect("/dashboard");
+  } catch (err) {
+      if (err.name === "UserExistsError") {
+          req.flash("error", "Username already exists. Please choose another.");
+      } else {
+          req.flash("error", "Something went wrong. Please try again.");
+      }
+      res.redirect("/signup");
+  }
 }));
+
 
 // login student
 app.post("/login",passport.authenticate('user-local',
@@ -188,14 +200,27 @@ app.get('/logout',(req, res, next)=>{
 //proctor
 
 // signup_proctor
-app.post("/proctor_signup",wrapAsync(async(req,res)=>{
-    let { username,email,password}=req.body;
-    const newuser=new User_proctor({username,email,password});
-    const proctor_user=await User_proctor.register(newuser,password);
-    console.log(proctor_user);
-    req.flash("success","Your account has been created successfully!");
-    res.redirect("/proctor_login");
+app.post("/proctor_signup", wrapAsync(async (req, res) => {
+  try {
+      let { username, email, password } = req.body;
+      const newUser = new User_proctor({ username, email });
+
+      const proctor_user = await User_proctor.register(newUser, password);
+      console.log(proctor_user);
+
+      req.flash("success", "Your account has been created successfully!");
+      res.redirect("/proctor_login");
+  } catch (err) {
+      if (err.name === "UserExistsError") {
+          req.flash("error", "Username already exists. Please choose another.");
+      } else {
+          req.flash("error", "Something went wrong. Please try again.");
+      }
+      res.redirect("/proctor_signup");
+  }
 }));
+
+
 
 // login proctor
 app.post("/proctor_login",passport.authenticate('proctor-local',
