@@ -141,8 +141,8 @@ const sendNotification = (toEmail, message) => {
 // signup_student
 app.post("/signup", wrapAsync(async (req, res, next) => {
   try {
-      let { username, usn, email, proctor_name, proctor_email, password } = req.body;
-      const newUser = new User({ username, usn, email, proctor_name, proctor_email, pointearned: 0 });
+      let { name, username, email, proctor_name, proctor_email, password } = req.body;
+      const newUser = new User({ name, username, email, proctor_name, proctor_email, pointearned: 0 });
 
       const registeredUser = await User.register(newUser, password);
       console.log(registeredUser);
@@ -151,7 +151,7 @@ app.post("/signup", wrapAsync(async (req, res, next) => {
       res.redirect("/dashboard");
   } catch (err) {
       if (err.name === "UserExistsError") {
-          req.flash("error", "Username already exists. Please choose another.");
+          req.flash("error", "USN already exists. Please choose another.");
       } else {
           req.flash("error", "Something went wrong. Please try again.");
       }
@@ -285,7 +285,7 @@ app.get('/dashboard', async (req, res) => {
       req.flash("success","Please Login");
       return res.render("../views/listings/home/studentlogin.ejs");
   }  
-      const username = req.user.username;
+      const username = req.user.name;
       const curruser = req.user._id;
 
       // Fetch all listings
@@ -344,7 +344,7 @@ app.post('/dashboard', upload, async (req, res) => {
       });
 
       // Send notification to the proctor
-      const message = `Student's Name: ${req.user.username}
+      const message = `Student's Name: ${req.user.name}
 Activity: ${newActivity.activity}
 Points Claimed: ${newActivity.points}
 Date: ${new Date(newActivity.date).toLocaleDateString()}
